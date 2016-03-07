@@ -7,28 +7,59 @@ typedef struct block_header {
   alloc : 1;
 } Block;
 
+int count (void *sheap)
+{
+  int count = 0;
+  while (*sheap != NULL) {
+    count++;
+  }
+  return count;
+}
+
 void *mymalloc (size_t size)
 {
-  //Mettre size au multiple de 4
+  /*Mettre size au multiple de 4*/
   if (size % 4 != 0)
   {
     size = size + (4-(size%4));
   }
 
-  //first block_header of the heap
+  /*first block_header of the heap*/
   void *sheap = sbrk(0);
+  void *remember = sbrk(0);
 
-  while (sheap != NULL)
-  {
-    //Todo make a function which checks if there is a free allocation
+  int i;
+  for(i=0; i < count; i++) {
+    if (sheap->alloc == 1 && sheap->size >= size)
+    {
+      if (sheap->size - size < remember->size - size)
+      {
+        *remember = &sheap;
+      }
+    }
+    *sheap = &sheap + sheap->size;
   }
 
+  if (remember->size - size < 0)
+  {
+    /*Extend heap and if it's impossible return NULL*/
+  }else{
+    remember->alloc = 0;
+    return remember->size;
+  }
+  return NULL;
 }
 
 void myfree (void *ptr)
 {
   if (*ptr =)
 }
+
+void mycalloc()
+{
+
+}
+
 
 int main(int argc, char const *argv[]) {
 
