@@ -27,10 +27,50 @@ Block *increase(size_t size)
   return add;
 }
 
+/*Merge some empty blocks*/
+Block *merge (Block *b)
+{
+  Block *sheap = b;
+  int count = 10;
+
+  while ((void*)sheap < sbrk(0) && count) {
+    if (sheap->alloc == 0)
+    {
+      Block *next = (Block*)((char*) sheap + sheap->size);
+      while (next->alloc == 0 && (void*)next < sbrk(0)) {
+        sheap->size = sheap->size + next->size;
+        next = (Block*)((char*) next + next->size);
+      }
+    }
+    else /*Move to the next Block*/
+    {
+      sheap = (Block*)((char*) sheap + sheap->size);
+    }
+    count--;
+  }
+  return sheap;
+}
+
+/*Split one block in two*/
+void split (Block *b, size_t size)
+{
+  if(b->size < size+4){return;}
+
+  Block *sp = (Block*) ((char*) b + size);
+
+  sp->size = b->size - size;
+  sp->zero = 0;
+  sp->alloc = 0;
+
+  b->size = size;
+}
+
 void *mymalloc (size_t size)
 {
   /*ptr to the first allocated block*/
   static Block *start_heap = NULL;
+
+
 
   /*Set size to a multiple of 4*/
   if (size % 4 != 0)
