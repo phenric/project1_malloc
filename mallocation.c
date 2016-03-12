@@ -13,7 +13,6 @@ typedef struct block_header {
   alloc : 1;
 } Block;
 
-/*Increase the size of the heap*/
 Block *increase(size_t size)
 {
   Block *add = (Block*) sbrk(size);
@@ -22,7 +21,7 @@ Block *increase(size_t size)
 
   add->size = size;
   add->zero = 0;
-  add->alloc = 1;
+  add->alloc = 0;
 
   return add;
 }
@@ -65,17 +64,37 @@ void split (Block *b, size_t size)
   b->size = size;
 }
 
-void *mymalloc (size_t size)
+void *mymalloc (size_t size, size_t mem_size)
 {
   /*ptr to the first allocated block*/
   static Block *start_heap = NULL;
 
+  Block *mem = start_heap;
 
+  /*Optimization: before any mymalloc, merge some blocks*/
+  if(mem == NULL || (void*)mem >= sbrk(0)) /*If mem is at the end of the heap*/
+  {
+    mem = start_heap;
+  }
+
+  if (start_heap != NULL)
+  {
+  merge(mem);
+  }
 
   /*Set size to a multiple of 4*/
   if (size % 4 != 0)
   {
     size = size + (4-(size%4));
+  }
+
+  /*If it's the first call of mymalloc*/
+  if (start_heap == NULL) {
+    start_heap = increase(mem_size);
+
+    if (start_heap != NULL) {
+      start_heap->alloc = 0;
+    }
   }
 
   if (start_heap != NULL)
@@ -86,6 +105,12 @@ void *mymalloc (size_t size)
     while ((void*)sheap < sbrk(0)) {
       if (sheap->alloc == 0 && sheap->size >= size + 4)
       {
+        /*Optimization: before alloc, adjust size*/
+        if (sheap->size != size + 4)
+        {
+          split(sheap, size+4);
+        }
+
         sheap->alloc = 1;
         return (char*) sheap+4;
       }
@@ -96,15 +121,19 @@ void *mymalloc (size_t size)
     }
   }
 
+  /*If the heap is full, do not increase and return NULL*/
+  return NULL;
+
+  /*Due the fact that we can't increase the heap for the project, we will not use it
   Block *b = increase(size+4);
 
-  /*if increase() fails*/
+  /*if increase() fails
   if(b == NULL) {return NULL;}
   else
   {
     if(start_heap == NULL) {start_heap = b;}
     return (char*) b+4;
-  }
+  }*/
 
 }
 
@@ -127,8 +156,8 @@ void *mycalloc()
 
 
 int main(int argc, char const *argv[]) {
-  void *a = mymalloc(64);
-  void *b = mymalloc(8);
+  void *a = mymalloc(64, 1024);
+  void *b = mymalloc(8, 1024);
 
   printf("%p\n", a);
   printf("%p\n", b);
@@ -136,8 +165,8 @@ int main(int argc, char const *argv[]) {
   myfree(a);
   myfree(b);
 
-  void *c = mymalloc(8);
-  void *d = mymalloc(8);
+  void *c = mymalloc(8, 1024);
+  void *d = mymalloc(8, 1024);
 
   printf("%p\n", c);
   printf("%p\n", d);
