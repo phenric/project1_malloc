@@ -149,11 +149,14 @@ void myfree (void *ptr)
   bl->alloc = 0;
 }
 
-void *mycalloc()
+void *mycalloc (size_t size,size_t mem_size)
 {
-  return NULL;
+  void *newmalloc = mymalloc(size_t size,size_t mem_size);
+  Block *findsize = (Block*) ((char*) newmalloc - 4);
+  size_t t= findsize->size;
+  memset(newmalloc,0,t);
+  return newmalloc;
 }
-
 
 int main(int argc, char const *argv[]) {
   void *a = mymalloc(64, 1024);
