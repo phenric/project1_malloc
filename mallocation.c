@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 
 /*
@@ -149,9 +150,9 @@ void myfree (void *ptr)
   bl->alloc = 0;
 }
 
-void *mycalloc (size_t size,size_t mem_size)
+void *mycalloc (size_t size, size_t mem_size)
 {
-  void *newmalloc = mymalloc(size_t size,size_t mem_size);
+  void *newmalloc = mymalloc(size, mem_size);
   Block *findsize = (Block*) ((char*) newmalloc - 4);
   size_t t= findsize->size;
   memset(newmalloc,0,t);
