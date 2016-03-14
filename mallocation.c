@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "myalloc.h"
+/*#include "myalloc.h"*/
 
 
 /*
@@ -155,7 +155,7 @@ void *mycalloc (size_t size, size_t mem_size)
 {
   void *newmalloc = mymalloc(size, mem_size);
   Block *findsize = (Block*) ((char*) newmalloc - 4);
-  size_t t= findsize->size;
+  size_t t= (findsize->size)-4;
   memset(newmalloc,0,t);
   return newmalloc;
 }
@@ -175,6 +175,21 @@ int main(int argc, char const *argv[]) {
 
   printf("%p\n", c);
   printf("%p\n", d);
+
+  void *e = mycalloc(64, 1024);
+  void *f = mycalloc(8, 1024);
+
+  printf("%p\n", e);
+  printf("%p\n", f);
+
+  myfree(e);
+  myfree(f);
+
+  void *g = mycalloc(8, 1024);
+  void *h = mycalloc(8, 1024);
+
+  printf("%p\n", g);
+  printf("%p\n", h);
 
   return 0;
 }
