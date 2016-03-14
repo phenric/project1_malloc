@@ -2,18 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-/*#include "myalloc.h"*/
+#include "mallocation.h"
 
 
 /*
 If we use mymalloc, don't use malloc !!!
 */
 
-typedef struct block_header {
-  unsigned int size : 29,
-  zero : 2,
-  alloc : 1;
-} Block;
 
 Block *increase(size_t size)
 {
@@ -129,7 +124,7 @@ void *mymalloc (size_t size, size_t mem_size)
   /*Due the fact that we can't increase the heap for the project, we will not use it
   Block *b = increase(size+4);
 
-  /*if increase() fails
+  if increase() fails
   if(b == NULL) {return NULL;}
   else
   {
