@@ -4,6 +4,7 @@
 #include <string.h>
 #include "mallocation.h"
 
+static Block *start_heap = NULL;
 
 /*
 If we use mymalloc, don't use malloc !!!
@@ -12,15 +13,20 @@ If we use mymalloc, don't use malloc !!!
 
 Block *increase(size_t size)
 {
-  Block *add = (Block*) sbrk(size);
+  if(size < 0)
+  {
+    return NULL;
+  }
 
-  if ((void*) add == (void*) -1) {return NULL;}
+  start_heap = (Block*) sbrk(size);
 
-  add->size = size;
-  add->zero = 0;
-  add->alloc = 0;
+  if ((void*) start_heap == (void*) -1) {return NULL;}
 
-  return add;
+  start_heap->size = size;
+  start_heap->zero = 0;
+  start_heap->alloc = 0;
+
+  return start_heap;
 }
 
 /*Merge some empty blocks*/
@@ -61,10 +67,11 @@ void split (Block *b, size_t size)
   b->size = size;
 }
 
-void *mymalloc (size_t size, size_t mem_size)
+void *mymalloc (size_t size)
 {
-  /*ptr to the first allocated block*/
+  /*ptr to the first allocated block
   static Block *start_heap = NULL;
+  */
 
   Block *mem = start_heap;
 
@@ -87,11 +94,13 @@ void *mymalloc (size_t size, size_t mem_size)
 
   /*If it's the first call of mymalloc*/
   if (start_heap == NULL) {
+    return NULL;
+    /*
     start_heap = increase(mem_size);
 
     if (start_heap != NULL) {
       start_heap->alloc = 0;
-    }
+    }*/
   }
 
   if (start_heap != NULL)
@@ -146,45 +155,75 @@ void myfree (void *ptr)
   bl->alloc = 0;
 }
 
-void *mycalloc (size_t size, size_t mem_size)
+void *mycalloc (size_t size)
 {
-  void *newmalloc = mymalloc(size, mem_size);
+  void *newmalloc = mymalloc(size);
   Block *findsize = (Block*) ((char*) newmalloc - 4);
   size_t t= (findsize->size)-4;
   memset(newmalloc,0,t);
   return newmalloc;
 }
-
+/*
 int main(int argc, char const *argv[]) {
-  void *a = mymalloc(64, 1024);
-  void *b = mymalloc(8, 1024);
 
-  printf("%p\n", a);
-  printf("%p\n", b);
+  int num = atoi(argv[1]);
+  /*Increase the heap
+  printf("You are increasing the heap (%d)\n", num);
+  /*
+  Block *err = increase(num);
+  if (err == NULL)
+  {
+    printf("Sorry, we can not increase the heap\n");
+    return 0;
+  }
+  printf("Increase : check\n");
+  printf("############################################\n");
+
+  void *a = mymalloc(64, num);
+  void *b = mymalloc(8, num);
+
+  printf("mymalloc a (64): %p\n", a);
+  printf("mymalloc b (8): %p\n", b);
+
+  printf("############################################\n");
 
   myfree(a);
   myfree(b);
 
-  void *c = mymalloc(8, 1024);
-  void *d = mymalloc(8, 1024);
+  printf("Appel de myfree\n");
 
-  printf("%p\n", c);
-  printf("%p\n", d);
+  printf("############################################\n");
 
-  void *e = mycalloc(64, 1024);
-  void *f = mycalloc(8, 1024);
+  void *c = mymalloc(8, num);
+  void *d = mymalloc(8, num);
 
-  printf("%p\n", e);
-  printf("%p\n", f);
+  printf("mymalloc c (8): %p\n", c);
+  printf("mymalloc d (8): %p\n", d);
+
+  printf("############################################\n");
+
+  void *e = mycalloc(64, num);
+  void *f = mycalloc(8, num);
+
+  printf("mycalloc e (64): %p\n", e);
+  printf("mycalloc f (8): %p\n", f);
+
+  printf("############################################\n");
 
   myfree(e);
   myfree(f);
 
-  void *g = mycalloc(8, 1024);
-  void *h = mycalloc(8, 1024);
+  printf("Appel de myfree\n");
 
-  printf("%p\n", g);
-  printf("%p\n", h);
+  printf("############################################\n");
+
+  void *g = mycalloc(8, num);
+  void *h = mycalloc(8, num);
+
+  printf("mycalloc g (8):%p\n", g);
+  printf("mycalloc h (8):%p\n", h);
+
+  printf("############################################\n");
 
   return 0;
-}
+}*/

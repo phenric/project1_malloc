@@ -19,10 +19,10 @@ Block *merge (Block *b);
 void split (Block *b, size_t size);
 
 /*an other version of malloc*/
-void *mymalloc (size_t size, size_t mem_size);
+void *mymalloc (size_t size);
 
 /*an other version of free*/
 void myfree (void *ptr);
 
 /*an other version of calloc*/
-void *mycalloc (size_t size, size_t mem_size);
+void *mycalloc (size_t size);
