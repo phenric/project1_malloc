@@ -95,12 +95,7 @@ void *mymalloc (size_t size)
   /*If it's the first call of mymalloc*/
   if (start_heap == NULL) {
     return NULL;
-    /*
-    start_heap = increase(mem_size);
-
-    if (start_heap != NULL) {
-      start_heap->alloc = 0;
-    }*/
+    
   }
 
   if (start_heap != NULL)
@@ -130,17 +125,6 @@ void *mymalloc (size_t size)
   /*If the heap is full, do not increase and return NULL*/
   return NULL;
 
-  /*Due the fact that we can't increase the heap for the project, we will not use it
-  Block *b = increase(size+4);
-
-  if increase() fails
-  if(b == NULL) {return NULL;}
-  else
-  {
-    if(start_heap == NULL) {start_heap = b;}
-    return (char*) b+4;
-  }*/
-
 }
 
 
@@ -164,67 +148,3 @@ void *mycalloc (size_t size)
   memset(newmalloc,0,t);
   return newmalloc;
 }
-/*
-int main(int argc, char const *argv[]) {
-
-  int num = atoi(argv[1]);
-  /*Increase the heap
-  printf("You are increasing the heap (%d)\n", num);
-  /*
-  Block *err = increase(num);
-  if (err == NULL)
-  {
-    printf("Sorry, we can not increase the heap\n");
-    return 0;
-  }
-  printf("Increase : check\n");
-  printf("############################################\n");
-
-  void *a = mymalloc(64, num);
-  void *b = mymalloc(8, num);
-
-  printf("mymalloc a (64): %p\n", a);
-  printf("mymalloc b (8): %p\n", b);
-
-  printf("############################################\n");
-
-  myfree(a);
-  myfree(b);
-
-  printf("Appel de myfree\n");
-
-  printf("############################################\n");
-
-  void *c = mymalloc(8, num);
-  void *d = mymalloc(8, num);
-
-  printf("mymalloc c (8): %p\n", c);
-  printf("mymalloc d (8): %p\n", d);
-
-  printf("############################################\n");
-
-  void *e = mycalloc(64, num);
-  void *f = mycalloc(8, num);
-
-  printf("mycalloc e (64): %p\n", e);
-  printf("mycalloc f (8): %p\n", f);
-
-  printf("############################################\n");
-
-  myfree(e);
-  myfree(f);
-
-  printf("Appel de myfree\n");
-
-  printf("############################################\n");
-
-  void *g = mycalloc(8, num);
-  void *h = mycalloc(8, num);
-
-  printf("mycalloc g (8):%p\n", g);
-  printf("mycalloc h (8):%p\n", h);
-
-  printf("############################################\n");
-
-  return 0;
-}*/
