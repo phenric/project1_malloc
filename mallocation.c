@@ -158,6 +158,7 @@ void myfree (void *ptr)
 void *mycalloc (size_t size)
 {
   void *newmalloc = mymalloc(size);
+  if (newmalloc == NULL) return NULL;
   Block *findsize = (Block*) ((char*) newmalloc - 4);
   size_t t= (findsize->size)-4;
   memset(newmalloc,0,t);
