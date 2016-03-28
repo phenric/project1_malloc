@@ -4,29 +4,29 @@
 #include <string.h>
 #include "mallocation.h"
 
-static Block *start_heap = NULL;
+ static Block *start_heap = NULL;
 
 /*
 If we use mymalloc, don't use malloc !!!
 */
 
 
-Block *increase(size_t size)
+int increase(size_t size)
 {
-  if(size < 0)
+  if((int)size <= 0)
   {
-    return NULL;
+    return 0;
   }
 
   start_heap = (Block*) sbrk(size);
 
-  if ((void*) start_heap == (void*) -1) {return NULL;}
+  if ((void*) start_heap == (void*) -1) {return 0;}
 
   start_heap->size = size;
   start_heap->zero = 0;
   start_heap->alloc = 0;
 
-  return start_heap;
+  return 1;
 }
 
 /*Merge some empty blocks*/
@@ -124,7 +124,6 @@ void *mymalloc (size_t size)
 
   /*If the heap is full, do not increase and return NULL*/
   return NULL;
-
 }
 
 
@@ -142,7 +141,6 @@ void myfree (void *ptr)
 void *mycalloc (size_t size)
 {
   void *newmalloc = mymalloc(size);
-  if (newmalloc == NULL) return NULL;
   Block *findsize = (Block*) ((char*) newmalloc - 4);
   size_t t= (findsize->size)-4;
   memset(newmalloc,0,t);
