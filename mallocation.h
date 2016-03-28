@@ -10,7 +10,7 @@ typedef struct block_header {
 } Block;
 
 /*increase by the size of the heap by the size put in the arguments*/
-Block *increase(size_t size);
+int increase(size_t size);
 
 /*Merge empty blocks and return a new block*/
 Block *merge (Block *b);
