@@ -10,8 +10,8 @@ int main(int argc, char const *argv[]) {
   /*Increase the heap*/
   printf("You are increasing the heap (%d)\n", num);
 
-  Block *err = increase(num);
-  if (err == NULL)
+  int err = increase(num);
+  if (err == 0)
   {
     printf("Sorry, we can not increase the heap\n");
     return 0;
