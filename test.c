@@ -10,10 +10,10 @@
 void tests ()
 {
 	/*test du increase du heap*/
-	Block* heap = increase(1024);
-	CU_ASSERT_EQUAL(heap->alloc,0);
-	CU_ASSERT_EQUAL(heap->size,1024);
-	CU_ASSERT_EQUAL(heap->zero,0);
+	int heap = increase(-8);
+	CU_ASSERT_EQUAL(heap,0);
+	heap = increase(1024);
+	CU_ASSERT_EQUAL(heap,1);
 	/*test du malloc*/
 	void *a = mymalloc(47);
 	CU_ASSERT_PTR_NOT_NULL(a);
@@ -67,4 +67,3 @@ int main(int argc, char const *argv[])
 	return 0;
 	
 }
-
